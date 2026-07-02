@@ -35,11 +35,31 @@ app.add_middleware(
 # Validate configurations
 config.validate_config()
 
+from urllib.parse import urlparse
+from mcp.server.transport_security import TransportSecuritySettings
+
+# Configure allowed hosts for MCP DNS rebinding protection
+allowed_hosts = ["localhost", "127.0.0.1", "0.0.0.0"]
+if config.BASE_URL:
+    parsed_url = urlparse(config.BASE_URL)
+    host_domain = parsed_url.netloc
+    if host_domain:
+        host_name = host_domain.split(":")[0]
+        if host_name not in allowed_hosts:
+            allowed_hosts.append(host_name)
+            allowed_hosts.append(host_domain)
+
+transport_security = TransportSecuritySettings(
+    enable_dns_rebinding_protection=True,
+    allowed_hosts=allowed_hosts
+)
+
 # Initialize FastMCP Server
 mcp = FastMCP(
     "WeeklyTechX MCP",
     instructions="Blogger API integration server exposing Blogger management tools to Manus AI.",
-    website_url="https://weeklytechx.blogspot.com/"
+    website_url="https://weeklytechx.blogspot.com/",
+    transport_security=transport_security
 )
 
 # -----------------------------------------------------------------------------
