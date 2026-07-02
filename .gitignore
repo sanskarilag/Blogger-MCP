@@ -51,7 +51,7 @@ env/
 token.json
 
 # If you want to prevent committing your client credentials
-# credentials.json
+credentials.json
 
 # OS files
 .DS_Store
