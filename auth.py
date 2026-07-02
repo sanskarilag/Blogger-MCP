@@ -39,9 +39,15 @@ def get_redirect_uri(request: Request) -> str:
 
 def is_authenticated() -> bool:
     """Checks if a valid or refreshable token is present."""
-    if not os.path.exists(config.TOKEN_FILE):
+    if not os.path.exists(config.TOKEN_FILE) and not os.getenv("GOOGLE_TOKEN_JSON"):
         return False
     try:
+        # Dynamically restore token.json if env variable exists but file is missing (e.g. Render restart)
+        if not os.path.exists(config.TOKEN_FILE) and os.getenv("GOOGLE_TOKEN_JSON"):
+            with open(config.TOKEN_FILE, 'w') as f:
+                f.write(os.getenv("GOOGLE_TOKEN_JSON"))
+            logger.info("Dynamically restored token.json from GOOGLE_TOKEN_JSON environment variable.")
+            
         creds = Credentials.from_authorized_user_file(config.TOKEN_FILE, SCOPES)
         return creds and (creds.valid or creds.refresh_token is not None)
     except Exception as e:
@@ -55,8 +61,19 @@ def get_blogger_credentials() -> Credentials:
     Raises AuthRequiredException if no valid credentials exist.
     """
     if not os.path.exists(config.TOKEN_FILE):
-        logger.warning("Token file not found. Authentication required.")
-        raise AuthRequiredException()
+        # Fallback check for dynamic environment variable (e.g. Render deployments)
+        token_json = os.getenv("GOOGLE_TOKEN_JSON")
+        if token_json:
+            try:
+                with open(config.TOKEN_FILE, 'w') as f:
+                    f.write(token_json)
+                logger.info(f"Dynamically created {config.TOKEN_FILE} from GOOGLE_TOKEN_JSON env variable.")
+            except Exception as e:
+                logger.error(f"Failed to dynamically create token.json: {e}")
+                raise AuthRequiredException()
+        else:
+            logger.warning("Token file not found. Authentication required.")
+            raise AuthRequiredException()
 
     try:
         creds = Credentials.from_authorized_user_file(config.TOKEN_FILE, SCOPES)
