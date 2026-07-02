@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: weeklytechx-mcp
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: BLOG_ID
+        sync: false # Set this to your Blogger ID (e.g. 9029248112920582318)
+      - key: BLOG_NAME
+        value: Weekly TechX
+      - key: BLOG_URL
+        value: https://weeklytechx.blogspot.com/
+      - key: BASE_URL
+        sync: false # Set this to your Render app URL once created (e.g. https://weeklytechx-mcp.onrender.com)
+      - key: GOOGLE_CLIENT_SECRETS_JSON
+        sync: false # Set this to the raw JSON string from your credentials.json file
+      - key: PORT
+        value: 10000
