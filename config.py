@@ -36,6 +36,17 @@ TOKEN_FILE = "token.json"
 
 def validate_config():
     """Validates configuration at startup and logs configurations."""
+    # Dynamically create credentials.json on boot if the environment variable is provided
+    if not os.path.exists(CREDENTIALS_FILE):
+        secrets_json = os.getenv("GOOGLE_CLIENT_SECRETS_JSON")
+        if secrets_json:
+            try:
+                with open(CREDENTIALS_FILE, 'w') as f:
+                    f.write(secrets_json)
+                logger.info(f"Dynamically created {CREDENTIALS_FILE} from GOOGLE_CLIENT_SECRETS_JSON env variable.")
+            except Exception as e:
+                logger.error(f"Failed to dynamically write {CREDENTIALS_FILE} on boot: {e}")
+
     if not BLOG_ID or BLOG_ID == "your_blogger_blog_id_here":
         logger.warning("BLOG_ID is not configured. Blogger API operations will fail until BLOG_ID is set in .env.")
     
