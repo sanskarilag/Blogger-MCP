@@ -133,7 +133,7 @@ def find_posts(keyword: str) -> str:
         return f"Error searching posts: {e}"
 
 @mcp.tool()
-def publish_blog(title: str, html_content: str, labels: list[str] = None) -> str:
+def publish_blog(title: str, html_content: str, labels: list[str] = None, published: str = None, search_description: str = None) -> str:
     """
     Creates and publishes a new blog post directly on the blogger site.
     
@@ -141,26 +141,31 @@ def publish_blog(title: str, html_content: str, labels: list[str] = None) -> str
         title: The post title.
         html_content: The Blogger-compatible HTML body markup.
         labels: List of category tags (e.g. ["Tech", "AI"]).
+        published: The publication date/time in RFC 3339 format (optional, e.g. 2026-07-03T13:11:00Z).
+        search_description: The search description / snippet of the post (optional).
     """
     try:
         post = blogger_client.create_post(
             title=title,
             content=html_content,
             labels=labels,
-            publish=True
+            publish=True,
+            published=published,
+            custom_meta_data=search_description
         )
         return (
             f"Successfully published blog post!\n"
             f"- Title: {post['title']}\n"
             f"- ID: {post['id']}\n"
             f"- URL: {post['url']}\n"
-            f"- Labels: {', '.join(post['labels']) if post['labels'] else 'None'}"
+            f"- Labels: {', '.join(post['labels']) if post['labels'] else 'None'}\n"
+            f"- Search Description: {post.get('custom_meta_data', 'None')}"
         )
     except Exception as e:
         return f"Error publishing blog post: {e}"
 
 @mcp.tool()
-def save_draft(title: str, html_content: str, labels: list[str] = None) -> str:
+def save_draft(title: str, html_content: str, labels: list[str] = None, published: str = None, search_description: str = None) -> str:
     """
     Creates a new blog post as a DRAFT (not published).
     
@@ -168,25 +173,30 @@ def save_draft(title: str, html_content: str, labels: list[str] = None) -> str:
         title: The draft title.
         html_content: The Blogger-compatible HTML body markup.
         labels: List of tags.
+        published: The publication date/time in RFC 3339 format (optional, e.g. 2026-07-03T13:11:00Z).
+        search_description: The search description / snippet of the post (optional).
     """
     try:
         post = blogger_client.create_post(
             title=title,
             content=html_content,
             labels=labels,
-            publish=False
+            publish=False,
+            published=published,
+            custom_meta_data=search_description
         )
         return (
             f"Successfully saved draft blog post!\n"
             f"- Title: {post['title']}\n"
             f"- ID: {post['id']}\n"
-            f"- Status: DRAFT"
+            f"- Status: DRAFT\n"
+            f"- Search Description: {post.get('custom_meta_data', 'None')}"
         )
     except Exception as e:
         return f"Error saving draft: {e}"
 
 @mcp.tool()
-def edit_blog(post_id: str, title: str = None, html_content: str = None, labels: list[str] = None) -> str:
+def edit_blog(post_id: str, title: str = None, html_content: str = None, labels: list[str] = None, published: str = None, search_description: str = None) -> str:
     """
     Updates fields of an existing post using patching.
     Specify only the parameters you wish to change. Unspecified fields remain intact.
@@ -196,19 +206,24 @@ def edit_blog(post_id: str, title: str = None, html_content: str = None, labels:
         title: The new title (optional).
         html_content: The new HTML body content (optional).
         labels: The updated tags list (optional).
+        published: The publication date/time in RFC 3339 format (optional).
+        search_description: The updated search description (optional).
     """
     try:
         post = blogger_client.update_post(
             post_id=post_id,
             title=title,
             content=html_content,
-            labels=labels
+            labels=labels,
+            published=published,
+            custom_meta_data=search_description
         )
         return (
             f"Successfully updated blog post {post_id}!\n"
             f"- Title: {post['title']}\n"
             f"- URL: {post['url'] or 'No URL (Draft)'}\n"
-            f"- Labels: {', '.join(post['labels']) if post['labels'] else 'None'}"
+            f"- Labels: {', '.join(post['labels']) if post['labels'] else 'None'}\n"
+            f"- Search Description: {post.get('custom_meta_data', 'None')}"
         )
     except Exception as e:
         return f"Error editing blog post: {e}"

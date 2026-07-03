@@ -73,7 +73,8 @@ def _format_post(post: dict) -> dict:
         "labels": post.get("labels", []),
         "published": post.get("published"),
         "updated": post.get("updated"),
-        "status": post.get("status", "UNKNOWN")
+        "status": post.get("status", "UNKNOWN"),
+        "custom_meta_data": post.get("customMetaData", "")
     }
 
 def handle_api_error(operation: str, err: HttpError):
@@ -143,7 +144,7 @@ def get_post(post_id: str) -> dict:
     except HttpError as e:
         handle_api_error(f"get_post({post_id})", e)
 
-def create_post(title: str, content: str, labels: list[str] = None, publish: bool = True) -> dict:
+def create_post(title: str, content: str, labels: list[str] = None, publish: bool = True, published: str = None, custom_meta_data: str = None) -> dict:
     """
     Creates a new post on Blogger.
     If publish is True, publishes directly. If False, saves as DRAFT.
@@ -156,6 +157,10 @@ def create_post(title: str, content: str, labels: list[str] = None, publish: boo
         }
         if labels:
             body["labels"] = labels
+        if published:
+            body["published"] = published
+        if custom_meta_data:
+            body["customMetaData"] = custom_meta_data
             
         post = service.posts().insert(
             blogId=config.BLOG_ID,
@@ -168,7 +173,7 @@ def create_post(title: str, content: str, labels: list[str] = None, publish: boo
     except HttpError as e:
         handle_api_error("create_post", e)
 
-def update_post(post_id: str, title: str = None, content: str = None, labels: list[str] = None) -> dict:
+def update_post(post_id: str, title: str = None, content: str = None, labels: list[str] = None, published: str = None, custom_meta_data: str = None) -> dict:
     """
     Updates fields of an existing post using PATCH.
     Preserves unchanged fields and returns updated post.
@@ -182,6 +187,10 @@ def update_post(post_id: str, title: str = None, content: str = None, labels: li
             body["content"] = content
         if labels is not None:
             body["labels"] = labels
+        if published is not None:
+            body["published"] = published
+        if custom_meta_data is not None:
+            body["customMetaData"] = custom_meta_data
             
         post = service.posts().patch(
             blogId=config.BLOG_ID,
