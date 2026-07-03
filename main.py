@@ -242,6 +242,93 @@ def remove_blog(post_id: str) -> str:
     except Exception as e:
         return f"Error deleting blog: {e}"
 
+@mcp.tool()
+def get_blog_tags(limit: int = 50) -> str:
+    """
+    Retrieves all tags (labels) currently used on the blog across recent posts, 
+    sorted by usage frequency. Use this to maintain consistent categories.
+    """
+    try:
+        tags = blogger_client.get_blog_tags(limit=limit)
+        if not tags:
+            return "No tags / labels found on the blog."
+        
+        output = [f"Found {len(tags)} unique labels in the last {limit} posts:"]
+        for t in tags:
+            output.append(f"- {t['tag']} ({t['count']} posts)")
+        return "\n".join(output)
+    except Exception as e:
+        return f"Error retrieving blog tags: {e}"
+
+@mcp.tool()
+def get_schedule_assistant() -> str:
+    """
+    Analyzes currently scheduled future posts and suggests the next 3 available 
+    publication timeslots (in UTC). Use this to schedule posts at optimal times.
+    """
+    import datetime
+    try:
+        scheduled = blogger_client.get_scheduled_posts(limit=20)
+        
+        # Parse existing scheduled times (ISO 8601)
+        taken_times = []
+        for post in scheduled:
+            pub_time = post.get("published")
+            if pub_time:
+                try:
+                    dt = datetime.datetime.fromisoformat(pub_time.replace("Z", "+00:00"))
+                    taken_times.append(dt)
+                except Exception:
+                    pass
+                    
+        # Propose publication slots (daily at 9:00 AM, 3:00 PM, and 8:00 PM UTC)
+        now = datetime.datetime.now(datetime.timezone.utc)
+        suggested_slots = []
+        day_offset = 1 # Start suggesting from tomorrow
+        
+        target_hours = [9, 15, 20] # 9:00 AM, 3:00 PM, 8:00 PM UTC
+        
+        while len(suggested_slots) < 3 and day_offset < 14:
+            target_date = now.date() + datetime.timedelta(days=day_offset)
+            for hour in target_hours:
+                slot_time = datetime.datetime(
+                    target_date.year, target_date.month, target_date.day,
+                    hour, 0, 0, tzinfo=datetime.timezone.utc
+                )
+                
+                # Check if this slot is close to any already scheduled post (within 2 hours)
+                is_free = True
+                for taken in taken_times:
+                    diff = abs((taken - slot_time).total_seconds())
+                    if diff < 7200: # 2 hours
+                        is_free = False
+                        break
+                        
+                if is_free:
+                    suggested_slots.append(slot_time)
+                    if len(suggested_slots) >= 3:
+                        break
+            day_offset += 1
+            
+        # Format output
+        output = []
+        if scheduled:
+            output.append("Current Scheduled Posts:")
+            for s in scheduled:
+                output.append(f"- {s['title']} (Scheduled for: {s['published']})")
+        else:
+            output.append("No posts currently scheduled.")
+            
+        output.append("\nRecommended Next Available Slots (use these as the 'published' parameter):")
+        for idx, slot in enumerate(suggested_slots):
+            iso_str = slot.strftime("%Y-%m-%dT%H:%M:%SZ")
+            local_time_str = slot.astimezone().strftime("%Y-%m-%d %I:%M %p")
+            output.append(f"{idx+1}. UTC: {iso_str} ({local_time_str} your local time)")
+            
+        return "\n".join(output)
+    except Exception as e:
+        return f"Error running schedule assistant: {e}"
+
 
 # -----------------------------------------------------------------------------
 # OAUTH WEB ROUTES

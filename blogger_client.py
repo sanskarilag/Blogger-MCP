@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+from collections import Counter
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from auth import get_blogger_credentials
@@ -237,3 +238,39 @@ def search_posts(keyword: str) -> list[dict]:
         return formatted
     except HttpError as e:
         handle_api_error("search_posts", e)
+
+def get_scheduled_posts(limit: int = 20) -> list[dict]:
+    """Retrieves list of posts that are scheduled to be published in the future."""
+    try:
+        service = _get_service()
+        result = service.posts().list(
+            blogId=config.BLOG_ID,
+            maxResults=limit,
+            status="SCHEDULED"
+        ).execute()
+        
+        items = result.get("items", [])
+        formatted = [_format_post(item) for item in items]
+        logger.info(f"Listed {len(formatted)} scheduled posts")
+        return formatted
+    except HttpError as e:
+        handle_api_error("get_scheduled_posts", e)
+
+def get_blog_tags(limit: int = 50) -> list[dict]:
+    """
+    Scans recent posts to extract, aggregate, and count all categories/labels.
+    Returns tag names sorted by usage frequency.
+    """
+    try:
+        posts = list_posts(limit=limit)
+        all_labels = []
+        for post in posts:
+            all_labels.extend(post.get("labels", []))
+            
+        counts = Counter(all_labels)
+        sorted_tags = [{"tag": tag, "count": count} for tag, count in counts.most_common()]
+        logger.info(f"Aggregated {len(sorted_tags)} unique labels from last {limit} posts.")
+        return sorted_tags
+    except Exception as e:
+        logger.error(f"Error aggregating blog tags: {e}")
+        raise e
