@@ -54,213 +54,415 @@ Wrap everything inside:
 Immediately after opening the container, inject this exact customized CSS block:
 ```html
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@700;800&family=Space+Grotesk:wght@700&display=swap');
 
-.blogger-post-container {
-    font-family: 'Inter', 'Segoe UI', sans-serif;
-    line-height: 1.8;
-    color: #F8FAFC;
-    background-color: #0B1220;
-    max-width: 850px;
-    margin: 0 auto;
-    padding: 30px;
-    border-radius: 16px;
+.blogger-post-container{
+
+font-family:'Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+
+line-height:1.8;
+
+color:#1e293b;
+
+max-width:850px;
+
+margin:0 auto;
+
 }
 
-/* Brand Header Element */
-.bw-brand-badge {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: #06B6D4;
-    margin-bottom: 8px;
-    display: inline-block;
-}
+
 
 /* Headings */
-.blogger-post-container h1 {
-    font-family: 'Manrope', sans-serif;
-    color: #F8FAFC;
-    font-size: 2.4em;
-    line-height: 1.2;
-    margin-bottom: 28px;
-    border-bottom: 4px solid #2563EB;
-    padding-bottom: 14px;
-    font-weight: 800;
+
+.blogger-post-container h1{
+
+color:#0f172a;
+
+font-size:2.3em;
+
+line-height:1.2;
+
+margin-bottom:24px;
+
+border-bottom:4px solid #3b82f6;
+
+padding-bottom:12px;
+
+font-weight:800;
+
 }
 
-.blogger-post-container h2 {
-    font-family: 'Manrope', sans-serif;
-    color: #06B6D4;
-    font-size: 1.7em;
-    margin-top: 45px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-    padding-bottom: 10px;
-    font-weight: 700;
+
+
+.blogger-post-container h2{
+
+color:#2563eb;
+
+font-size:1.65em;
+
+margin-top:40px;
+
+margin-bottom:18px;
+
+border-bottom:1px solid #e2e8f0;
+
+padding-bottom:10px;
+
+font-weight:700;
+
 }
 
-.blogger-post-container h3 {
-    font-family: 'Manrope', sans-serif;
-    color: #F8FAFC;
-    font-size: 1.35em;
-    margin-top: 30px;
-    margin-bottom: 14px;
-    font-weight: 700;
+
+
+.blogger-post-container h3{
+
+color:#1e293b;
+
+font-size:1.3em;
+
+margin-top:28px;
+
+margin-bottom:12px;
+
+font-weight:700;
+
 }
 
-/* Text & Inline Elements */
-.blogger-post-container p {
-    margin-bottom: 20px;
-    color: #94A3B8;
+
+
+/* Text */
+
+.blogger-post-container p{
+
+margin-bottom:18px;
+
+color:#334155;
+
 }
 
-.blogger-post-container strong {
-    color: #F8FAFC;
+
+
+/* Images */
+
+.blogger-post-container figure{
+
+margin:35px 0;
+
+text-align:center;
+
 }
 
-/* Media Figures */
-.blogger-post-container figure {
-    margin: 40px 0;
-    text-align: center;
+
+
+.blogger-post-container img{
+
+max-width:100%;
+
+height:auto;
+
+border-radius:14px;
+
+box-shadow:
+
+0 10px 25px rgba(0,0,0,.08),
+
+0 4px 8px rgba(0,0,0,.04);
+
+transition:all .3s ease;
+
 }
 
-.blogger-post-container img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 14px;
-    border: 1px solid rgba(148, 163, 184, 0.15);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    transition: transform .3s ease;
+
+
+.blogger-post-container img:hover{
+
+transform:translateY(-3px);
+
 }
 
-.blogger-post-container img:hover {
-    transform: translateY(-3px);
+
+
+.blogger-post-container figcaption{
+
+font-size:.92em;
+
+color:#64748b;
+
+margin-top:12px;
+
+font-style:italic;
+
 }
 
-.blogger-post-container figcaption {
-    font-size: .9rem;
-    color: #94A3B8;
-    margin-top: 14px;
-    font-style: italic;
-    opacity: 0.8;
+
+
+/* FAQ / Details */
+
+.blogger-post-container details{
+
+background:rgba(255,255,255,.75);
+
+backdrop-filter:blur(12px);
+
+border:1px solid #e2e8f0;
+
+border-radius:12px;
+
+margin-bottom:14px;
+
+padding:14px 18px;
+
+transition:all .25s ease;
+
 }
 
-/* Accordions / Interactive Elements */
-.blogger-post-container details {
-    background: rgba(248, 250, 252, 0.03);
-    border: 1px solid rgba(148, 163, 184, 0.1);
-    border-radius: 12px;
-    margin-bottom: 16px;
-    padding: 16px 20px;
-    transition: all .25s ease;
+
+
+.blogger-post-container details:hover{
+
+border-color:#93c5fd;
+
 }
 
-.blogger-post-container details:hover {
-    border-color: #2563EB;
-    background: rgba(37, 99, 235, 0.03);
+
+
+.blogger-post-container details[open]{
+
+background:#ffffff;
+
+box-shadow:0 8px 20px rgba(15,23,42,.06);
+
 }
 
-.blogger-post-container details[open] {
-    background: rgba(11, 18, 32, 0.6);
-    border-color: #06B6D4;
+
+
+.blogger-post-container summary{
+
+font-weight:600;
+
+cursor:pointer;
+
+color:#2563eb;
+
+outline:none;
+
 }
 
-.blogger-post-container summary {
-    font-weight: 600;
-    cursor: pointer;
-    color: #06B6D4;
-    outline: none;
+
+
+.blogger-post-container details p{
+
+margin-top:14px;
+
+margin-bottom:0;
+
+padding-top:14px;
+
+border-top:1px dashed #cbd5e1;
+
 }
 
-.blogger-post-container details p {
-    margin-top: 14px;
-    margin-bottom: 0;
-    padding-top: 14px;
-    border-top: 1px dashed rgba(148, 163, 184, 0.2);
-    color: #94A3B8;
+
+
+/* Tables */
+
+.blogger-post-container table{
+
+width:100%;
+
+border-collapse:collapse;
+
+margin:28px 0;
+
+background:#ffffff;
+
+border-radius:14px;
+
+overflow:hidden;
+
+box-shadow:0 8px 20px rgba(15,23,42,.06);
+
 }
 
-/* Data Tables */
-.blogger-post-container table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 32px 0;
-    background: rgba(248, 250, 252, 0.02);
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid rgba(148, 163, 184, 0.1);
-}
+
 
 .blogger-post-container th,
-.blogger-post-container td {
-    padding: 16px 20px;
-    text-align: left;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+
+.blogger-post-container td{
+
+padding:14px 18px;
+
+text-align:left;
+
+border-bottom:1px solid #e2e8f0;
+
 }
 
-.blogger-post-container th {
-    background: rgba(37, 99, 235, 0.1);
-    color: #F8FAFC;
-    font-weight: 700;
+
+
+.blogger-post-container th{
+
+background:#f8fafc;
+
+color:#0f172a;
+
+font-weight:700;
+
 }
 
-.blogger-post-container tr:hover {
-    background: rgba(248, 250, 252, 0.04);
+
+
+.blogger-post-container tr:hover{
+
+background:#f8fafc;
+
 }
 
-/* Callouts / Quotes */
-.blogger-post-container blockquote {
-    margin: 32px 0;
-    padding: 24px;
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(6, 182, 212, 0.03));
-    border-left: 5px solid #2563EB;
-    border-radius: 0 14px 14px 0;
-    font-style: italic;
-    color: #F8FAFC;
-    font-size: 1.05em;
+
+
+.blogger-post-container tr:last-child td{
+
+border-bottom:none;
+
 }
+
+
+
+/* Quote */
+
+.blogger-post-container blockquote{
+
+margin:28px 0;
+
+padding:22px;
+
+background:linear-gradient(
+
+135deg,
+
+#eff6ff,
+
+#f8fafc
+
+);
+
+border-left:5px solid #3b82f6;
+
+border-radius:0 14px 14px 0;
+
+font-style:italic;
+
+color:#1e40af;
+
+font-size:1.05em;
+
+}
+
+
 
 /* Lists */
+
 .blogger-post-container ul,
-.blogger-post-container ol {
-    margin-bottom: 24px;
-    padding-left: 28px;
-    color: #94A3B8;
+
+.blogger-post-container ol{
+
+margin-bottom:22px;
+
+padding-left:28px;
+
 }
 
-.blogger-post-container li {
-    margin-bottom: 10px;
+
+
+.blogger-post-container li{
+
+margin-bottom:8px;
+
 }
+
+
 
 /* Links */
-.blogger-post-container a {
-    color: #2563EB;
-    text-decoration: none;
-    border-bottom: 1px dotted #2563EB;
-    transition: .2s ease;
+
+.blogger-post-container a{
+
+color:#2563eb;
+
+text-decoration:none;
+
+border-bottom:1px dotted #2563eb;
+
+transition:.2s ease;
+
 }
 
-.blogger-post-container a:hover {
-    color: #06B6D4;
-    border-bottom: 1px solid #06B6D4;
+
+
+.blogger-post-container a:hover{
+
+color:#1d4ed8;
+
+border-bottom-style:solid;
+
 }
 
-/* Footer References */
-.references-section {
-    font-size: .92em;
-    background: rgba(248, 250, 252, 0.02);
-    border: 1px solid rgba(148, 163, 184, 0.1);
-    padding: 26px;
-    border-radius: 14px;
-    margin-top: 50px;
+
+
+/* References */
+
+.references-section{
+
+font-size:.92em;
+
+background:linear-gradient(
+
+135deg,
+
+#f8fafc,
+
+#ffffff
+
+);
+
+border:1px solid #e2e8f0;
+
+padding:24px;
+
+border-radius:14px;
+
+margin-top:45px;
+
+box-shadow:0 4px 12px rgba(0,0,0,.04);
+
 }
 
-.references-section h3 {
-    margin-top: 0;
-    color: #06B6D4;
+
+
+.references-section ol{
+
+padding-left:22px;
+
+margin-bottom:0;
+
 }
+
+
+
+.references-section li{
+
+margin-bottom:10px;
+
+}
+
+
+
+/* Smooth Scrolling */
+
+html{
+
+scroll-behavior:smooth;
+
+}
+
 </style>
 ```
 
