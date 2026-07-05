@@ -56,9 +56,9 @@ transport_security = TransportSecuritySettings(
 
 # Initialize FastMCP Server
 mcp = FastMCP(
-    "WeeklyTechX MCP",
+    f"{config.BLOG_NAME} MCP",
     instructions="Blogger API integration server exposing Blogger management tools to Manus AI.",
-    website_url="https://weeklytechx.blogspot.com/",
+    website_url=config.BLOG_URL,
     transport_security=transport_security
 )
 
