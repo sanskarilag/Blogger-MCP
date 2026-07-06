@@ -275,3 +275,25 @@ def get_blog_tags(limit: int = 50) -> list[dict]:
     except Exception as e:
         logger.error(f"Error aggregating blog tags: {e}")
         raise e
+
+def get_blog_stats() -> dict:
+    """
+    Retrieves page view statistics for the blog across various ranges.
+    Returns counts for 7DAYS, 30DAYS, and all time.
+    """
+    try:
+        service = _get_service()
+        result = service.pageViews().get(
+            blogId=config.BLOG_ID,
+            range=["7DAYS", "30DAYS", "all"]
+        ).execute()
+        
+        counts = result.get("counts", [])
+        stats = {}
+        for c in counts:
+            stats[c.get("timeRange", "unknown").lower()] = int(c.get("count", 0))
+            
+        logger.info(f"Retrieved blog stats: {stats}")
+        return stats
+    except HttpError as e:
+        handle_api_error("get_blog_stats", e)

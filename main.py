@@ -329,6 +329,24 @@ def get_schedule_assistant() -> str:
     except Exception as e:
         return f"Error running schedule assistant: {e}"
 
+@mcp.tool()
+def get_blog_stats() -> str:
+    """
+    Retrieves the blog's pageview traffic statistics (all time, last 30 days, 
+    and last 7 days). Use this to analyze blog performance.
+    """
+    try:
+        stats = blogger_client.get_blog_stats()
+        output = [
+            f"=== {config.BLOG_NAME} Traffic Analytics ===",
+            f"- All Time Pageviews: {stats.get('all_time', 0):,}",
+            f"- Last 30 Days:       {stats.get('thirty_days', 0):,}",
+            f"- Last 7 Days:        {stats.get('seven_days', 0):,}"
+        ]
+        return "\n".join(output)
+    except Exception as e:
+        return f"Error retrieving blog stats: {e}"
+
 
 # -----------------------------------------------------------------------------
 # OAUTH WEB ROUTES
