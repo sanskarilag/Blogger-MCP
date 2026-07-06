@@ -206,14 +206,14 @@ def update_post(post_id: str, title: str = None, content: str = None, labels: li
         handle_api_error(f"update_post({post_id})", e)
 
 def delete_post(post_id: str) -> dict:
-    """Deletes a post from the blog."""
+    """Deletes a post from the blog by moving it to the trash bin."""
     try:
         service = _get_service()
-        service.posts().delete(blogId=config.BLOG_ID, postId=post_id).execute()
-        logger.info(f"Post ID={post_id} deleted successfully.")
+        service.posts().delete(blogId=config.BLOG_ID, postId=post_id, useTrash=True).execute()
+        logger.info(f"Post ID={post_id} moved to trash successfully.")
         return {
             "status": "success",
-            "message": f"Post {post_id} has been deleted."
+            "message": f"Post {post_id} has been moved to the trash bin."
         }
     except HttpError as e:
         handle_api_error(f"delete_post({post_id})", e)
