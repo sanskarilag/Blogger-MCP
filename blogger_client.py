@@ -121,7 +121,8 @@ def list_posts(limit: int = 10) -> list[dict]:
         result = service.posts().list(
             blogId=config.BLOG_ID,
             maxResults=limit,
-            status=["LIVE", "DRAFT"]
+            status=["LIVE", "DRAFT"],
+            view="ADMIN"
         ).execute()
         
         items = result.get("items", [])
@@ -135,7 +136,7 @@ def get_post(post_id: str) -> dict:
     """Retrieves metadata and contents of a specific post."""
     try:
         service = _get_service()
-        post = service.posts().get(blogId=config.BLOG_ID, postId=post_id).execute()
+        post = service.posts().get(blogId=config.BLOG_ID, postId=post_id, view="ADMIN").execute()
         
         # Include HTML content as well since get_post needs to return the specific post details
         formatted = _format_post(post)
